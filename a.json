@@ -1,0 +1,25 @@
+{
+  "timetables": {
+    "timetable1": {
+      "gradeId": "grade1",
+      "sectionId": "section1", 
+      "day": "sunday",
+      "lessons": [
+        {
+          "start": "08:00",
+          "end": "08:45", 
+          "subject": "اللغة العربية",
+          "teacher": "أ. أحمد",
+          "room": "101"
+        },
+        {
+          "start": "08:45",
+          "end": "09:30",
+          "subject": "الرياضيات", 
+          "teacher": "أ. محمد",
+          "room": "101"
+        }
+      ]
+    }
+  }
+}

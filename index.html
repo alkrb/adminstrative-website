@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>جدول المدرسة - نظام إدارة الجداول الدراسية</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/responsive.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- شريط التنقل -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <img src="images/logo.png" alt="شعار المدرسة">
+                <span>نظام الجداول الدراسية</span>
+            </div>
+            <ul class="nav-menu">
+                <li class="nav-item">
+                    <a href="#" class="nav-link active" data-tab="home">الرئيسية</a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link" data-tab="timetable">جدول الحصص</a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link" data-tab="assignments">الواجبات</a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link" data-tab="exams">الامتحانات</a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link" data-tab="admin">لوحة التحكم</a>
+                </li>
+            </ul>
+            <div class="hamburger">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- المحتوى الرئيسي -->
+    <main class="main-content">
+        <!-- الصفحة الرئيسية -->
+        <section id="home" class="tab-content active">
+            <div class="hero-section">
+                <div class="hero-content">
+                    <h1>نظام إدارة الجداول الدراسية</h1>
+                    <p>منصة شاملة لمتابعة جداول الحصص والواجبات والامتحانات</p>
+                    <div class="selection-form">
+                        <div class="form-group">
+                            <label for="grade">الصف:</label>
+                            <select id="grade" class="form-control">
+                                <option value="">اختر الصف</option>
+                                <option value="grade1">الصف الأول</option>
+                                <option value="grade2">الصف الثاني</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="section">الشعبة:</label>
+                            <select id="section" class="form-control" disabled>
+                                <option value="">اختر الشعبة</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="day">اليوم:</label>
+                            <select id="day" class="form-control" disabled>
+                                <option value="">اختر اليوم</option>
+                                <option value="sunday">الأحد</option>
+                                <option value="monday">الاثنين</option>
+                                <option value="tuesday">الثلاثاء</option>
+                                <option value="wednesday">الأربعاء</option>
+                                <option value="thursday">الخميس</option>
+                            </select>
+                        </div>
+                        <button id="viewSchedule" class="btn-primary" disabled>عرض الجدول</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- جدول الحصص -->
+        <section id="timetable" class="tab-content">
+            <div class="container">
+                <h2>جدول الحصص</h2>
+                <div id="timetable-content" class="timetable-container">
+                    <p class="no-data">يرجى اختيار الصف والشعبة واليوم لعرض الجدول</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- الواجبات -->
+        <section id="assignments" class="tab-content">
+            <div class="container">
+                <h2>الواجبات المعلقة</h2>
+                <div id="assignments-content" class="assignments-container">
+                    <p class="no-data">لا توجد واجبات لعرضها</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- الامتحانات -->
+        <section id="exams" class="tab-content">
+            <div class="container">
+                <h2>جدول الامتحانات</h2>
+                <div class="filters">
+                    <select id="examMonth" class="form-control">
+                        <option value="">جميع الأشهر</option>
+                        <option value="1">يناير</option>
+                        <option value="2">فبراير</option>
+                        <option value="3">مارس</option>
+                        <option value="4">أبريل</option>
+                        <option value="5">مايو</option>
+                        <option value="6">يونيو</option>
+                    </select>
+                    <select id="examGrade" class="form-control">
+                        <option value="">جميع الصفوف</option>
+                        <option value="grade1">الصف الأول</option>
+                        <option value="grade2">الصف الثاني</option>
+                    </select>
+                </div>
+                <div id="exams-content" class="exams-container">
+                    <p class="no-data">لا توجد امتحانات لعرضها</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- لوحة التحكم -->
+        <section id="admin" class="tab-content">
+            <div class="container">
+                <h2>لوحة التحكم</h2>
+                <div id="admin-login" class="admin-login">
+                    <h3>تسجيل الدخول للمسؤول</h3>
+                    <form id="login-form">
+                        <div class="form-group">
+                            <label for="admin-email">البريد الإلكتروني:</label>
+                            <input type="email" id="admin-email" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="admin-password">كلمة المرور:</label>
+                            <input type="password" id="admin-password" class="form-control" required>
+                        </div>
+                        <button type="submit" class="btn-primary">تسجيل الدخول</button>
+                    </form>
+                </div>
+                <div id="admin-panel" class="admin-panel hidden">
+                    <div class="admin-tabs">
+                        <button class="admin-tab active" data-admin-tab="timetable-management">إدارة الجداول</button>
+                        <button class="admin-tab" data-admin-tab="assignments-management">إدارة الواجبات</button>
+                        <button class="admin-tab" data-admin-tab="exams-management">إدارة الامتحانات</button>
+                    </div>
+                    
+                    <!-- إدارة الجداول -->
+                    <div id="timetable-management" class="admin-tab-content active">
+                        <h3>إدارة جداول الحصص</h3>
+                        <button class="btn-secondary" id="add-timetable">إضافة جدول جديد</button>
+                        <div id="timetable-management-content"></div>
+                    </div>
+                    
+                    <!-- إدارة الواجبات -->
+                    <div id="assignments-management" class="admin-tab-content">
+                        <h3>إدارة الواجبات</h3>
+                        <button class="btn-secondary" id="add-assignment">إضافة واجب جديد</button>
+                        <div id="assignments-management-content"></div>
+                    </div>
+                    
+                    <!-- إدارة الامتحانات -->
+                    <div id="exams-management" class="admin-tab-content">
+                        <h3>إدارة الامتحانات</h3>
+                        <button class="btn-secondary" id="add-exam">إضافة امتحان جديد</button>
+                        <div id="exams-management-content"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- التذييل -->
+    <footer class="footer">
+        <div class="container">
+            <p>© 2023 نظام إدارة الجداول الدراسية. جميع الحقوق محفوظة.</p>
+        </div>
+    </footer>
+
+    <!-- النماذج المنبثقة -->
+    <div id="modal-overlay" class="modal-overlay hidden">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 id="modal-title">عنوان النافذة</h3>
+                <button id="modal-close" class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <!-- سيتم تعبئة المحتوى ديناميكيًا -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    
+    <!-- ملفات JavaScript الخاصة بالتطبيق -->
+    <script src="js/firebase-config.js"></script>
+    <script src="js/app.js"></script>
+    <script src="js/admin.js"></script>
+</body>
+</html>

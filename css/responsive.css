@@ -1,0 +1,130 @@
+/* تصميم متجاوب للهواتف والأجهزة اللوحية */
+@media (max-width: 992px) {
+    .nav-menu {
+        position: fixed;
+        right: -100%;
+        top: 70px;
+        flex-direction: column;
+        background-color: var(--secondary-color);
+        width: 80%;
+        height: calc(100vh - 70px);
+        text-align: center;
+        transition: var(--transition);
+        box-shadow: -5px 0 10px rgba(0, 0, 0, 0.1);
+        z-index: 999;
+    }
+
+    .nav-menu.active {
+        right: 0;
+    }
+
+    .nav-item {
+        margin: 15px 0;
+    }
+
+    .hamburger {
+        display: block;
+    }
+
+    .hamburger.active .bar:nth-child(2) {
+        opacity: 0;
+    }
+
+    .hamburger.active .bar:nth-child(1) {
+        transform: translateY(8px) rotate(45deg);
+    }
+
+    .hamburger.active .bar:nth-child(3) {
+        transform: translateY(-8px) rotate(-45deg);
+    }
+
+    .hero-content h1 {
+        font-size: 2rem;
+    }
+
+    .selection-form {
+        flex-direction: column;
+    }
+
+    .form-group {
+        min-width: 100%;
+    }
+}
+
+@media (max-width: 768px) {
+    .container {
+        padding: 0 15px;
+    }
+
+    .hero-section {
+        padding: 60px 0;
+    }
+
+    .lesson-card {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .lesson-details {
+        margin: 10px 0;
+    }
+
+    .assignment-header, .exam-header {
+        flex-direction: column;
+    }
+
+    .assignment-due, .exam-date {
+        margin-top: 10px;
+        align-self: flex-start;
+    }
+
+    .assignment-meta, .exam-meta {
+        flex-direction: column;
+        gap: 5px;
+    }
+
+    .filters {
+        flex-direction: column;
+    }
+
+    .admin-tabs {
+        flex-direction: column;
+    }
+
+    .management-item {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .management-actions {
+        margin-top: 10px;
+        align-self: flex-end;
+    }
+
+    .form-row {
+        flex-direction: column;
+        gap: 0;
+    }
+}
+
+@media (max-width: 480px) {
+    .nav-container {
+        padding: 0 15px;
+    }
+
+    .nav-logo span {
+        display: none;
+    }
+
+    .hero-content h1 {
+        font-size: 1.8rem;
+    }
+
+    .hero-content p {
+        font-size: 1rem;
+    }
+
+    .selection-form {
+        padding: 20px;
+    }
+}
