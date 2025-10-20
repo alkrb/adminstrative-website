@@ -570,3 +570,103 @@ header {
         font-size: 1.1rem;
     }
 }
+/* جميع الأنماط السابقة تبقى كما هي، مع إضافة التالي */
+
+.absence-summary {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+.summary-card {
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    color: white;
+    padding: 20px;
+    border-radius: var(--border-radius);
+    text-align: center;
+    box-shadow: var(--box-shadow);
+}
+
+.summary-card h3 {
+    font-size: 1.1rem;
+    margin-bottom: 10px;
+    font-weight: 500;
+}
+
+.summary-card p {
+    font-size: 2rem;
+    font-weight: 700;
+}
+
+.absence-item {
+    background: #FFFFFF;
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 15px;
+    border-right: 4px solid var(--warning-color);
+    transition: var(--transition);
+    animation: slideIn 0.5s ease;
+    border: 1px solid var(--gray-light);
+    position: relative;
+    overflow: hidden;
+}
+
+.absence-item::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 4px;
+    height: 100%;
+    background: var(--warning-color);
+}
+
+.absence-item:hover {
+    transform: translateX(-5px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+}
+
+.absence-item h4 {
+    color: var(--dark-color);
+    margin-bottom: 8px;
+    font-size: 1.2rem;
+}
+
+.absence-details {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.absence-detail {
+    display: flex;
+    justify-content: space-between;
+    padding: 5px 0;
+    border-bottom: 1px solid var(--gray-light);
+}
+
+.absence-detail:last-child {
+    border-bottom: none;
+}
+
+.absence-detail span:first-child {
+    font-weight: 600;
+    color: var(--dark-color);
+}
+
+.absence-detail span:last-child {
+    color: var(--gray-medium);
+}
+
+/* إضافة أنماط للاستجابة */
+@media (max-width: 768px) {
+    .absence-summary {
+        grid-template-columns: 1fr;
+    }
+    
+    .absence-details {
+        grid-template-columns: 1fr;
+    }
+}
