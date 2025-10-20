@@ -28,15 +28,15 @@ const users = {
             username: "student2",
             password: "2009",
             grade: "grade5",
-            class: "أ",
-            name: "مهدي باسم صالح"
+            class: "هـ",
+            name: "يوسف سيف هاشم"
         },
         {
             username: "student3",
             password: "1234",
-            grade: "grade4",
-            class: "ب",
-            name: "يوسف سيف هاشم"
+            grade: "grade5",
+            class: "هـ",
+            name: "مهدي باسم صالح"
         }
     ],
     admin: {
@@ -60,22 +60,34 @@ const studentWelcome = document.getElementById('student-welcome');
 const studentInfo = document.getElementById('student-info');
 const examsBtn = document.getElementById('exams-btn');
 const lessonsBtn = document.getElementById('lessons-btn');
+const absenceBtn = document.getElementById('absence-btn');
 const examsSection = document.getElementById('exams-section');
 const lessonsSection = document.getElementById('lessons-section');
+const absenceSection = document.getElementById('absence-section');
 const backFromExamsBtn = document.getElementById('back-from-exams');
 const backFromLessonsBtn = document.getElementById('back-from-lessons');
+const backFromAbsenceBtn = document.getElementById('back-from-absence');
 const examsList = document.getElementById('exams-list');
 const lessonsList = document.getElementById('lessons-list');
+const absenceList = document.getElementById('absence-list');
 const examsTitle = document.getElementById('exams-title');
 const lessonsTitle = document.getElementById('lessons-title');
+const absenceTitle = document.getElementById('absence-title');
+const totalAbsenceDays = document.getElementById('total-absence-days');
+const monthAbsenceDays = document.getElementById('month-absence-days');
 const manageLessonsBtn = document.getElementById('manage-lessons');
 const manageExamsBtn = document.getElementById('manage-exams');
+const manageAbsenceBtn = document.getElementById('manage-absence');
 const lessonsManagement = document.getElementById('lessons-management');
 const examsManagement = document.getElementById('exams-management');
+const absenceManagement = document.getElementById('absence-management');
 const addLessonForm = document.getElementById('add-lesson-form');
 const addExamForm = document.getElementById('add-exam-form');
+const addAbsenceForm = document.getElementById('add-absence-form');
 const lessonsTableBody = document.getElementById('lessons-table-body');
 const examsTableBody = document.getElementById('exams-table-body');
+const absenceTableBody = document.getElementById('absence-table-body');
+const absenceStudentSelect = document.getElementById('absence-student');
 const loading = document.getElementById('loading');
 
 // المتغيرات الحالية
@@ -109,16 +121,20 @@ function setupEventListeners() {
     // التنقل في واجهة الطالب
     examsBtn.addEventListener('click', showExams);
     lessonsBtn.addEventListener('click', showLessons);
+    absenceBtn.addEventListener('click', showAbsence);
     backFromExamsBtn.addEventListener('click', () => hideSection(examsSection));
     backFromLessonsBtn.addEventListener('click', () => hideSection(lessonsSection));
+    backFromAbsenceBtn.addEventListener('click', () => hideSection(absenceSection));
     
     // التنقل في واجهة الإدارة
-    manageLessonsBtn.addEventListener('click', () => showManagementSection(lessonsManagement, examsManagement));
-    manageExamsBtn.addEventListener('click', () => showManagementSection(examsManagement, lessonsManagement));
+    manageLessonsBtn.addEventListener('click', () => showManagementSection(lessonsManagement, examsManagement, absenceManagement));
+    manageExamsBtn.addEventListener('click', () => showManagementSection(examsManagement, lessonsManagement, absenceManagement));
+    manageAbsenceBtn.addEventListener('click', () => showManagementSection(absenceManagement, lessonsManagement, examsManagement));
     
     // إضافة بيانات جديدة
     addLessonForm.addEventListener('submit', addLesson);
     addExamForm.addEventListener('submit', addExam);
+    addAbsenceForm.addEventListener('submit', addAbsence);
 }
 
 // التحقق من وجود تسجيل دخول سابق
@@ -185,6 +201,7 @@ function handleLogout() {
     adminDashboard.classList.add('hidden');
     examsSection.classList.add('hidden');
     lessonsSection.classList.add('hidden');
+    absenceSection.classList.add('hidden');
     
     // إعادة تعيين نموذج تسجيل الدخول
     loginForm.reset();
@@ -215,6 +232,20 @@ function showDashboard() {
 function loadAdminData() {
     loadLessonsTable();
     loadExamsTable();
+    loadAbsenceTable();
+    populateStudentSelect();
+}
+
+// تعبئة قائمة الطلاب في إدارة الغياب
+function populateStudentSelect() {
+    absenceStudentSelect.innerHTML = '<option value="">-- اختر الطالب --</option>';
+    
+    users.students.forEach(student => {
+        const option = document.createElement('option');
+        option.value = student.username;
+        option.textContent = `${student.name} - ${getGradeName(student.grade)} ${student.class}`;
+        absenceStudentSelect.appendChild(option);
+    });
 }
 
 // عرض جدول الامتحانات للطالب
@@ -258,6 +289,28 @@ function showLessons() {
             console.error('Error fetching lessons:', error);
             renderLessonsList(null, true);
             lessonsSection.classList.remove('hidden');
+        });
+}
+
+// عرض سجل الغياب للطالب
+function showAbsence() {
+    showLoading(true);
+    
+    // جلب البيانات من Firebase
+    database.ref('absence').once('value')
+        .then(snapshot => {
+            showLoading(false);
+            const absenceRecords = snapshot.val();
+            renderAbsenceList(absenceRecords);
+            const gradeName = getGradeName(currentUser.grade);
+            absenceTitle.textContent = `سجل الغياب - ${gradeName} ${currentUser.class}`;
+            absenceSection.classList.remove('hidden');
+        })
+        .catch(error => {
+            showLoading(false);
+            console.error('Error fetching absence records:', error);
+            renderAbsenceList(null, true);
+            absenceSection.classList.remove('hidden');
         });
 }
 
@@ -388,15 +441,110 @@ function renderLessonsList(lessons, isError = false) {
     });
 }
 
+// عرض سجل الغياب
+function renderAbsenceList(absenceRecords, isError = false) {
+    absenceList.innerHTML = '';
+    
+    if (isError) {
+        absenceList.innerHTML = `
+            <div class="data-item">
+                <h3>خطأ في تحميل البيانات</h3>
+                <p>تعذر تحميل سجل الغياب. يرجى المحاولة مرة أخرى.</p>
+            </div>
+        `;
+        return;
+    }
+    
+    if (!absenceRecords) {
+        absenceList.innerHTML = `
+            <div class="data-item">
+                <h3>لا توجد سجلات غياب</h3>
+                <p>لا توجد سجلات غياب مسجلة حالياً.</p>
+            </div>
+        `;
+        return;
+    }
+    
+    // تصفية سجلات الغياب الخاصة بالطالب الحالي
+    const studentUsername = currentUser.username;
+    const filteredAbsence = Object.entries(absenceRecords)
+        .map(([id, record]) => ({ id, ...record }))
+        .filter(record => record.studentUsername === studentUsername);
+    
+    if (filteredAbsence.length === 0) {
+        absenceList.innerHTML = `
+            <div class="data-item">
+                <h3>لا توجد سجلات غياب</h3>
+                <p>لا توجد سجلات غياب مسجلة للطالب الحالي.</p>
+            </div>
+        `;
+        totalAbsenceDays.textContent = '0';
+        monthAbsenceDays.textContent = '0';
+        return;
+    }
+    
+    // ترتيب السجلات من الأحدث إلى الأقدم
+    filteredAbsence.sort((a, b) => new Date(b.date) - new Date(a.date));
+    
+    // حساب الإحصائيات
+    const currentDate = new Date();
+    const currentMonth = currentDate.getMonth();
+    const currentYear = currentDate.getFullYear();
+    
+    const totalDays = filteredAbsence.length;
+    const monthDays = filteredAbsence.filter(record => {
+        const recordDate = new Date(record.date);
+        return recordDate.getMonth() === currentMonth && recordDate.getFullYear() === currentYear;
+    }).length;
+    
+    totalAbsenceDays.textContent = totalDays;
+    monthAbsenceDays.textContent = monthDays;
+    
+    // عرض كل سجل غياب
+    filteredAbsence.forEach((record, index) => {
+        const absenceItem = document.createElement('div');
+        absenceItem.className = 'absence-item';
+        absenceItem.style.animationDelay = `${index * 0.1}s`;
+        
+        const recordDate = new Date(record.date);
+        const formattedDate = recordDate.toLocaleDateString('ar-EG', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+        });
+        
+        absenceItem.innerHTML = `
+            <h4>غياب بتاريخ: ${formattedDate}</h4>
+            <div class="absence-details">
+                <div class="absence-detail">
+                    <span>سبب الغياب:</span>
+                    <span>${record.reason || 'غير محدد'}</span>
+                </div>
+                <div class="absence-detail">
+                    <span>ملاحظات:</span>
+                    <span>${record.notes || 'لا توجد ملاحظات'}</span>
+                </div>
+                <div class="absence-detail">
+                    <span>مسجل بواسطة:</span>
+                    <span>الإدارة</span>
+                </div>
+            </div>
+        `;
+        
+        absenceList.appendChild(absenceItem);
+    });
+}
+
 // إخفاء قسم
 function hideSection(section) {
     section.classList.add('hidden');
 }
 
 // عرض قسم إدارة مع إخفاء الأقسام الأخرى
-function showManagementSection(showSection, hideSection) {
+function showManagementSection(showSection, hideSection1, hideSection2) {
     showSection.classList.remove('hidden');
-    hideSection.classList.add('hidden');
+    hideSection1.classList.add('hidden');
+    hideSection2.classList.add('hidden');
 }
 
 // إضافة درس جديد
@@ -477,6 +625,52 @@ function addExam(e) {
         });
 }
 
+// إضافة سجل غياب جديد
+function addAbsence(e) {
+    e.preventDefault();
+    
+    const studentUsername = document.getElementById('absence-student').value;
+    const date = document.getElementById('absence-date').value;
+    const reason = document.getElementById('absence-reason').value;
+    const notes = document.getElementById('absence-notes').value;
+    
+    if (!studentUsername || !date || !reason) {
+        alert('يرجى ملء جميع الحقول المطلوبة');
+        return;
+    }
+    
+    // البحث عن بيانات الطالب
+    const student = users.students.find(s => s.username === studentUsername);
+    if (!student) {
+        alert('الطالب المحدد غير موجود');
+        return;
+    }
+    
+    const newAbsence = {
+        studentUsername,
+        studentName: student.name,
+        grade: student.grade,
+        class: student.class,
+        date,
+        reason,
+        notes: notes || '',
+        recordedAt: new Date().toISOString(),
+        recordedBy: 'الإدارة'
+    };
+    
+    // إضافة إلى Firebase
+    database.ref('absence').push(newAbsence)
+        .then(() => {
+            alert('تم تسجيل الغياب بنجاح');
+            addAbsenceForm.reset();
+            loadAbsenceTable();
+        })
+        .catch(error => {
+            console.error('Error adding absence record:', error);
+            alert('حدث خطأ أثناء تسجيل الغياب');
+        });
+}
+
 // تحميل جدول الدروس للإدارة
 function loadLessonsTable() {
     database.ref('lessons').once('value')
@@ -500,6 +694,19 @@ function loadExamsTable() {
         .catch(error => {
             console.error('Error loading exams:', error);
             renderExamsTable(null, true);
+        });
+}
+
+// تحميل جدول الغياب للإدارة
+function loadAbsenceTable() {
+    database.ref('absence').once('value')
+        .then(snapshot => {
+            const absenceRecords = snapshot.val();
+            renderAbsenceTable(absenceRecords);
+        })
+        .catch(error => {
+            console.error('Error loading absence records:', error);
+            renderAbsenceTable(null, true);
         });
 }
 
@@ -629,6 +836,75 @@ function renderExamsTable(exams, isError = false) {
     });
 }
 
+// عرض جدول الغياب للإدارة
+function renderAbsenceTable(absenceRecords, isError = false) {
+    absenceTableBody.innerHTML = '';
+    
+    if (isError) {
+        absenceTableBody.innerHTML = `
+            <tr>
+                <td colspan="7" class="text-center">خطأ في تحميل البيانات</td>
+            </tr>
+        `;
+        return;
+    }
+    
+    if (!absenceRecords) {
+        absenceTableBody.innerHTML = `
+            <tr>
+                <td colspan="7" class="text-center">لا توجد سجلات غياب</td>
+            </tr>
+        `;
+        return;
+    }
+    
+    // تحويل كائن الغياب إلى مصفوفة
+    const absenceArray = Object.entries(absenceRecords).map(([id, record]) => ({
+        id,
+        ...record
+    }));
+    
+    // ترتيب السجلات من الأحدث إلى الأقدم
+    absenceArray.sort((a, b) => new Date(b.date) - new Date(a.date));
+    
+    // عرض كل سجل غياب في الجدول
+    absenceArray.forEach(record => {
+        const row = document.createElement('tr');
+        
+        const gradeNames = {
+            'grade4': 'الصف الرابع علمي',
+            'grade5': 'الصف الخامس علمي',
+            'grade6': 'الصف السادس علمي'
+        };
+        
+        const recordDate = new Date(record.date);
+        const formattedDate = recordDate.toLocaleDateString('ar-EG', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+        });
+        
+        row.innerHTML = `
+            <td>${record.studentName}</td>
+            <td>${gradeNames[record.grade] || record.grade}</td>
+            <td>${record.class}</td>
+            <td>${formattedDate}</td>
+            <td>${record.reason}</td>
+            <td>${record.notes || 'لا توجد'}</td>
+            <td class="action-buttons">
+                <button class="btn btn-secondary" onclick="editAbsence('${record.id}')">
+                    <i class="fas fa-edit"></i>
+                </button>
+                <button class="btn btn-danger" onclick="deleteAbsence('${record.id}')">
+                    <i class="fas fa-trash"></i>
+                </button>
+            </td>
+        `;
+        
+        absenceTableBody.appendChild(row);
+    });
+}
+
 // حذف درس
 function deleteLesson(lessonId) {
     if (confirm('هل أنت متأكد من حذف هذا الدرس؟')) {
@@ -655,6 +931,21 @@ function deleteExam(examId) {
             .catch(error => {
                 console.error('Error deleting exam:', error);
                 alert('حدث خطأ أثناء حذف الامتحان');
+            });
+    }
+}
+
+// حذف سجل غياب
+function deleteAbsence(absenceId) {
+    if (confirm('هل أنت متأكد من حذف سجل الغياب هذا؟')) {
+        database.ref(`absence/${absenceId}`).remove()
+            .then(() => {
+                alert('تم حذف سجل الغياب بنجاح');
+                loadAbsenceTable();
+            })
+            .catch(error => {
+                console.error('Error deleting absence record:', error);
+                alert('حدث خطأ أثناء حذف سجل الغياب');
             });
     }
 }
@@ -687,6 +978,11 @@ function editLesson(lessonId) {
 // تعديل امتحان (وظيفة تجريبية)
 function editExam(examId) {
     alert('وظيفة التعديل قيد التطوير. معرف الامتحان: ' + examId);
+}
+
+// تعديل سجل غياب (وظيفة تجريبية)
+function editAbsence(absenceId) {
+    alert('وظيفة التعديل قيد التطوير. معرف سجل الغياب: ' + absenceId);
 }
 
 // عرض/إخفاء مؤشر التحميل
