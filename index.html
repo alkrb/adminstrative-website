@@ -74,6 +74,13 @@
                     <h3>جدول الدروس</h3>
                     <p>عرض جدول الدروس الأسبوعي</p>
                 </div>
+                <div class="action-card" id="absence-btn">
+                    <div class="action-icon">
+                        <i class="fas fa-user-times"></i>
+                    </div>
+                    <h3>سجل الغياب</h3>
+                    <p>عرض سجل الغياب للعام الدراسي</p>
+                </div>
             </div>
 
             <!-- صفحة جدول الامتحانات -->
@@ -111,6 +118,34 @@
                     </div>
                 </div>
             </div>
+
+            <!-- صفحة سجل الغياب -->
+            <div id="absence-section" class="data-view hidden">
+                <div class="data-header">
+                    <button id="back-from-absence" class="back-btn">
+                        <i class="fas fa-arrow-right"></i>
+                        <span>العودة</span>
+                    </button>
+                    <div class="day-info">
+                        <h2 id="absence-title">سجل الغياب</h2>
+                    </div>
+                </div>
+                <div class="absence-container">
+                    <div class="absence-summary">
+                        <div class="summary-card">
+                            <h3>إجمالي أيام الغياب</h3>
+                            <p id="total-absence-days">0</p>
+                        </div>
+                        <div class="summary-card">
+                            <h3>أيام الغياب هذا الشهر</h3>
+                            <p id="month-absence-days">0</p>
+                        </div>
+                    </div>
+                    <div id="absence-list">
+                        <!-- سيتم ملء سجل الغياب بواسطة JavaScript -->
+                    </div>
+                </div>
+            </div>
         </section>
 
         <!-- واجهة الإدارة -->
@@ -135,6 +170,10 @@
                     <button id="manage-exams" class="btn btn-primary">
                         <i class="fas fa-file-alt"></i>
                         <span>إدارة جدول الامتحانات</span>
+                    </button>
+                    <button id="manage-absence" class="btn btn-primary">
+                        <i class="fas fa-user-times"></i>
+                        <span>إدارة الغياب</span>
                     </button>
                 </div>
 
@@ -281,6 +320,63 @@
                         </thead>
                         <tbody id="exams-table-body">
                             <!-- سيتم ملء جدول الامتحانات بواسطة JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- قسم إدارة الغياب -->
+                <div id="absence-management" class="admin-section hidden">
+                    <h3>إدارة سجل الغياب</h3>
+                    <form id="add-absence-form" class="login-form">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="absence-student">الطالب:</label>
+                                <select id="absence-student" class="form-select" required>
+                                    <option value="">-- اختر الطالب --</option>
+                                    <!-- سيتم ملء الطلاب بواسطة JavaScript -->
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="absence-date">تاريخ الغياب:</label>
+                                <input type="date" id="absence-date" class="form-input" required>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="absence-reason">سبب الغياب:</label>
+                                <select id="absence-reason" class="form-select" required>
+                                    <option value="">-- اختر السبب --</option>
+                                    <option value="مرض">مرض</option>
+                                    <option value="ظرف عائلي">ظرف عائلي</option>
+                                    <option value="سفر">سفر</option>
+                                    <option value="آخر">آخر</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="absence-notes">ملاحظات:</label>
+                                <input type="text" id="absence-notes" class="form-input" placeholder="ملاحظات إضافية (اختياري)">
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-success">
+                            <i class="fas fa-plus"></i>
+                            <span>تسجيل الغياب</span>
+                        </button>
+                    </form>
+                    
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>اسم الطالب</th>
+                                <th>الصف</th>
+                                <th>الشعبة</th>
+                                <th>تاريخ الغياب</th>
+                                <th>سبب الغياب</th>
+                                <th>ملاحظات</th>
+                                <th>الإجراءات</th>
+                            </tr>
+                        </thead>
+                        <tbody id="absence-table-body">
+                            <!-- سيتم ملء جدول الغياب بواسطة JavaScript -->
                         </tbody>
                     </table>
                 </div>
